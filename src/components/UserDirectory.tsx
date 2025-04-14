@@ -14,7 +14,7 @@ const UserDirectory = () => {
   const getUsers = async () => {
     try {
       const response = await axios.get(
-        "https://jsonplace2holder.typicode.com/users"
+        "https://jsonplaceholder.typicode.com/users"
       );
       setUsers(response.data);
     } catch (err) {
