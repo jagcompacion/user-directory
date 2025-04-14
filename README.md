@@ -11,7 +11,7 @@ npm run dev
 ## Task 3
 
 1. How would you manage state in a large-scale React app?
-   Answer: Zustand/Redux
+   Answer: If its inside component, use useState from react, if the state should pass from component to anthor component, you can use global state such as Zustand/Redux.
 2. How would you optimize performance in React using **useEffect**, **useMemo**, and **useCallback**?
    Answer:
    useEffect - Fetching data, Subscribing, directly interacting with the DOM.
