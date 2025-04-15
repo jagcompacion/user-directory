@@ -11,11 +11,23 @@ npm run dev
 ## Task 3
 
 1. How would you manage state in a large-scale React app?
-   Answer: If its inside component, use useState from react, if the state should pass from component to anthor component, you can use global state such as Zustand/Redux.
+   Answer:
+   1. Use global state management (Reduz, Zustand) to manage global state.
+   2. If its lightweight state management (theming, authentication, global settings) use React Context API. Avoid overusing cause its the same as prop drilling. once the top rerenders, all the child rerenders, can lead to performance issues.
+   3. Component level state use useState.
+   4. If you want a reusable state logic, use custom hooks, this helps your component clean and reusable.
+   5. Server state management use React Query, and Apollo Client for graphql. has a lot of features (fetching, caching, handling timeouts, and even polling) will lessen your code.
 2. How would you optimize performance in React using **useEffect**, **useMemo**, and **useCallback**?
    Answer:
-   useEffect - Fetching data, Subscribing, directly interacting with the DOM.
-   useMemo - Only use if the calculation is expensive or causes re-renders.
-   useCallback - Only use when you want to tell the parent that the value is the same from the child component through props.
-3. How would you ensure accessibility in the User Directory component?
-   Asnwer: Use appropriate HTML tags to convey structure and meaning. Use aria-labels to describe elements when plain text isn’t enough.
+3. for useEffect, use dependency array to controll when the effect runs to avoid unnecessary re-renders.
+   to prevent memory leaks, especially subscription and timers, add a clean up side effects on useEffect.
+4. for useMemo, if you have an expensive calculation, and/or dont want to rerender if the value changed, use useMemo.
+5. for useCallback, if you want to memoize functions and will not recreate on every render, especially when passing them as props to child components.
+6. How would you ensure accessibility in the User Directory component?
+   Answer:
+7. Use appropriate HTML tags to convey structure and meaning. if its a button use <button>, if its a header use <header>, if its a sidebar use <aside>
+8. Use aria roles to describe elements when plain text isn’t enough. if its a <div> and you want to make it as a button, you need to add aria-role="button". Use aria if theres no other way in answer no.1.
+9. Keyboard is useful in accesibility, it will focus the area of the current element. use tabIndex to manage focus when necessary.
+10. For forms, use <label> and "for" attribute.
+11. "Alt" text for images. useful for screenreader (will read the "alt") if the person focus on the image.
+12. You can also use tools in browser or you can install extension, or you can have it check online whether you met the WCAG standard or not.

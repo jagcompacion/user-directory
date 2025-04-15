@@ -1,37 +1,28 @@
-import { useEffect, useState, useMemo } from "react";
-import { Grid, TextField } from "@mui/material";
-import { Search } from "lucide-react";
-import axios from "axios";
+import { useState } from "react";
+import { Grid, Pagination, Box } from "@mui/material";
 import UserCard from "./UserCard";
 import ErrorCard from "./ErrorCard";
-import User from "../types/user";
+import Loading from "./Loading";
+import Search from "./Search";
+import useUsers from "../hooks/useUsers";
 
 const UserDirectory = () => {
-  const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 5;
 
-  const getUsers = async () => {
-    try {
-      const response = await axios.get(
-        "https://jsonplaceholder.typicode.com/users"
-      );
-      setUsers(response.data);
-    } catch (err) {
-      setError("Failed to fetch users");
-      console.error(err);
-    }
+  const { users, totalPages, loading, error } = useUsers(
+    searchQuery,
+    usersPerPage,
+    currentPage
+  );
+
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    page: number
+  ) => {
+    setCurrentPage(page);
   };
-
-  useEffect(() => {
-    getUsers();
-  }, []);
-
-  const filteredUsers = useMemo(() => {
-    return users.filter((user) =>
-      user.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [searchQuery, users]);
 
   if (error) {
     return <ErrorCard error={error} />;
@@ -39,23 +30,29 @@ const UserDirectory = () => {
 
   return (
     <div>
-      <TextField
-        fullWidth
-        placeholder="Search users..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        InputProps={{
-          startAdornment: (
-            <Search size={20} style={{ marginRight: 8, color: "#9e9e9e" }} />
-          ),
-        }}
-        sx={{ mb: 3 }}
+      <Search
+        searchQuery={searchQuery}
+        onSearchQueryChange={(value) => setSearchQuery(value)}
       />
-      <Grid container spacing={3}>
-        {filteredUsers.map((user) => (
-          <UserCard key={user.id} user={user} />
-        ))}
-      </Grid>
+      {loading ? (
+        <Loading />
+      ) : (
+        <div>
+          <Grid container spacing={3}>
+            {users.map((user) => (
+              <UserCard key={user.id} user={user} />
+            ))}
+          </Grid>
+          <Box display="flex" justifyContent="center" mt={3}>
+            <Pagination
+              count={totalPages}
+              page={currentPage}
+              onChange={handlePageChange}
+              color="primary"
+            />
+          </Box>
+        </div>
+      )}
     </div>
   );
 };
